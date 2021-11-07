@@ -2,25 +2,27 @@
 
 @section('content')
 <div class="container">
-    <form action="{{ route('books.store') }}" method="POST" enctype="multipart/form-data">
+    <h1>Edit {{ $book->title }}</h1>
+    <form action="{{ route('books.update',$book->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PATCH')
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
+            <input type="text" class="form-control" id="title" name="title" value="{{ $book->title ?? old('title') }}">
             @error('title')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
         <div class="mb-3">
             <label for="author" class="form-label">Author</label>
-            <input type="text" class="form-control" id="author" name="author" value="{{ old('author') }}">
+            <input type="text" class="form-control" id="author" name="author" value="{{ $book->author ?? old('author') }}">
             @error('author')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
         <div class="mb-3">
             <label for="info" class="form-label">Info</label>
-            <textarea class="form-control" id="info" rows="3" name="info">{{ old('info') }}</textarea>
+            <textarea class="form-control" id="info" rows="3" name="info">{{ $book->info ?? old('info')  }}</textarea>
             @error('info')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
@@ -30,27 +32,20 @@
             <select class="form-select" aria-label="Default select example" id="category" name="category">
                 <option selected></option>
                 @foreach ($categories as $category)
-                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                <option 
+                    value="{{ $category->id }}" 
+                    @if($book->category_id == $category->id )
+                    selected
+                    @endif
+                >
+                    {{ $category->name }}
+                </option>
                 @endforeach
             </select>
             @error('category')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
-        </div>
-        <div class="mb-3">
-            <label for="image" class="form-label">Image</label>
-            <input class="form-control form-control-lg" id="image" type="file" name="image">
-            @error('image')
-                <span class="text-danger">{{ $message }}</span>
-            @enderror
-        </div>   
-        <div class="mb-3">
-            <label for="file" class="form-label">File</label>
-            <input class="form-control form-control-lg" id="file" type="file" name="file">
-            @error('file')
-                <span class="text-danger">{{ $message }}</span>
-            @enderror
-        </div>     
+        </div> 
         <button type="submit" class="btn btn-primary w-100">Save</button>
     </form>
 </div>

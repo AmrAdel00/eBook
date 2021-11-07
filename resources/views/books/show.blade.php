@@ -2,10 +2,23 @@
 
 @section('content')
 <div class="container">
+    @if (session()->has('msg_update'))
+        <div class="alert alert-success">{{ session()->get('msg_update') }}</div>
+    @endif
+    @if($book->user_id == auth()->id())
+    <div class="d-flex justify-content-end">
+        <a href="{{ route('books.edit',$book->id) }}" class="btn btn-primary m-2">Edit</a>
+        <form method="POST" action="{{ route('books.destroy',$book->id) }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger m-2">Delete</button>
+        </form>
+    </div>
+    @endif
     <div class="row">
         <div class="col-6">
             <h1>{{ $book->title }}</h1>
-            <p>Author: {{ $book->author }}</p>
+            <p><span class="fw-bold">Author: </span>{{ $book->author }}</p>
             <p>{{ $book->info }}</p>
         </div>  
         <div class="col-6">

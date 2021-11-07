@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Category\CategoryRequest;
+use App\Models\Comment;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -62,9 +63,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
+        return view('admin.categories.edit',compact('category'));
+        
     }
 
     /**
@@ -74,9 +76,13 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request,Category $category)
     {
-        //
+        $category->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('categories.index')->with(['msg'=>'Category Updated Successfully']);
     }
 
     /**
@@ -85,8 +91,13 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        foreach($category->books as $book){
+            Comment::where('book_id',$book->id)->delete();
+        }
+        $category->books()->delete();
+        $category->delete();
+        return redirect()->route('categories.index')->with(['msg'=>'Category Deleted Successfully']);
     }
 }

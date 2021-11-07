@@ -59,7 +59,7 @@ class User extends Authenticatable
 
     public function hasRole($role)
     {
-        return $this->whereHas('roles',fn($q) => $q->where('name',$role))->exists();
+        return User::where('id',$this->id)->whereHas('roles',fn($q) => $q->where('name',$role))->exists();
     }
 
 }

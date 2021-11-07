@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Book\UserRequest;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -37,7 +39,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -57,9 +59,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('admin.users.edit',compact('user'));
     }
 
     /**
@@ -69,9 +71,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request,User $user)
     {
-        //
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+        return redirect()->route('users.index')->with(['msg' => 'User Updated Successfully']);
     }
 
     /**
@@ -80,8 +86,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->comments()->delete();
+        foreach($user->books as $book){
+            Comment::where('book_id',$book->id)->delete();
+        }
+        $user->books()->delete();
+
+        $user->roles()->detach();
+
+        $user->delete();
+        
+        return redirect()->route('users.index')->with(['msg' => 'User Deleted Successfully']);
     }
 }

@@ -14,6 +14,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
+        // Add Categories
         Category::create(['name'=>'category-1']);
         Category::create(['name'=>'category-2']);
         Category::create(['name'=>'category-3']);

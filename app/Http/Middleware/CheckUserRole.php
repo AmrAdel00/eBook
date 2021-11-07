@@ -16,7 +16,7 @@ class CheckUserRole
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->check() && !auth()->user()->hasRole('admin')){
+        if(!auth()->user()->hasRole('admin')){
             abort(403);
         }
         return $next($request);

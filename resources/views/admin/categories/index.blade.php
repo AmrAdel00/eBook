@@ -22,6 +22,7 @@
       <tr>
         <th scope="col">ID</th>
         <th scope="col">name</th>
+        <th scope="col">Options</th>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,20 @@
         <tr>
           <th scope="row">{{ $category->id }}</th>
           <td>{{ $category->name }}</td>
+          <td>
+            <div class="row">
+              <div class="col-1">
+                <a href="{{ route('categories.edit',$category->id) }}" class="btn btn-primary">Edit</a>
+              </div>
+              <div class="col-1">
+                <form method="POST" action="{{ route('categories.destroy',$category->id) }}">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </div>
+          </td>
         </tr>
         @endforeach
     </tbody>

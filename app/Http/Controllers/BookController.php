@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\File;
 use App\Http\Requests\Book\BookRequest;
+use App\Http\Requests\Book\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -70,9 +71,10 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Book $book)
     {
-        //
+        $categories = Category::all();
+        return view('books.edit',compact('book','categories'));
     }
 
     /**
@@ -82,9 +84,16 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateBookRequest $request, Book $book)
     {
-        //
+        $book->update([
+            'title' => $request->title,
+            'author' => $request->author,
+            'info' => $request->info,
+            'category_id' => $request->category,
+        ]);
+
+        return redirect()->route('books.show',$book->id)->with(['msg_update' => 'Book Updated Successfully']);
     }
 
     /**
@@ -93,8 +102,18 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Book $book)
     {
-        //
+        // Delete Image
+        File::delete($book->image);
+
+        // Delete File
+        File::delete($book->file);
+
+        // Delete Book
+        $book->comments()->delete();
+        $book->delete();
+
+        return redirect()->route('books.index')->with(['msg' => 'Book Deleted Successfully']);
     }
 }

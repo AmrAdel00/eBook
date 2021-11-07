@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="container">
+    <h3>All Books</h3>
+    <hr/>
     <div class="row">
         @foreach ($books as $book)
             <div class="col-lg-3 col-md-4 col-sm-6">
